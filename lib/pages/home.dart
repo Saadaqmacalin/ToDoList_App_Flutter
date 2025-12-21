@@ -12,6 +12,9 @@ class _HomePageState extends State<HomePage> {
   List todolist = [
     ["Web dev Project", false],
     ["Mobile app project", false],
+    ["Machine learning", false],
+    ["System Analysing", false],
+    ["DevOps", false],
   ];
 
   void checkBoxChanged(bool? value, int index) {
