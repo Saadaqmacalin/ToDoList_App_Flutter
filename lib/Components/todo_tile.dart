@@ -9,21 +9,32 @@ class ToDoTile extends StatelessWidget {
     super.key,
     required this.taskName,
     required this.taskCompleted,
-    required this.onChanged
+    required this.onChanged,
   });
 
   @override
   Widget build(BuildContext context) {
     return Padding(
-      
       padding: EdgeInsets.all(12),
       child: Container(
         // margin: EdgeInsets.only(top: 45),
         padding: EdgeInsets.all(12),
         child: Row(
           children: [
-            Checkbox(value: taskCompleted, onChanged: onChanged),
-             Text(taskName, style: TextStyle(fontSize: 24)),
+            Checkbox(
+              value: taskCompleted,
+              onChanged: onChanged,
+              activeColor: Colors.black,
+            ),
+            Text(
+              taskName,
+              style: TextStyle(
+                fontSize: 15,
+                decoration: taskCompleted
+                    ? TextDecoration.lineThrough
+                    : TextDecoration.none,
+              ),
+            ),
           ],
         ),
         decoration: BoxDecoration(
