@@ -22,6 +22,11 @@ class _HomePageState extends State<HomePage> {
       todolist[index][1] = !todolist[index][1];
     });
   }
+  void createNewTeask (){
+    showDialog(context: context, builder: context){
+      return AlertDialog()
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -32,6 +37,11 @@ class _HomePageState extends State<HomePage> {
         elevation: 12,
         title: const Text("To-Do List"),
         centerTitle: true,
+      ),
+      floatingActionButton: FloatingActionButton(
+        onPressed: createNewTeask,
+          child:Icon(Icons.add)
+        
       ),
       body: ListView.builder(
         itemCount: todolist.length,
