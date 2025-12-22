@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:todolist/Components/dialog_box.dart';
 import 'package:todolist/Components/todo_tile.dart';
 
 class HomePage extends StatefulWidget {
@@ -22,11 +23,15 @@ class _HomePageState extends State<HomePage> {
       todolist[index][1] = !todolist[index][1];
     });
   }
-  void createNewTeask (){
-    showDialog(context: context, builder: context){
-      return AlertDialog()
-    }
-  }
+ void createNewTask() {
+  showDialog(
+    context: context,
+    builder: (context) {
+      return DialogBox();
+    },
+  );
+}
+
 
   @override
   Widget build(BuildContext context) {
@@ -39,7 +44,7 @@ class _HomePageState extends State<HomePage> {
         centerTitle: true,
       ),
       floatingActionButton: FloatingActionButton(
-        onPressed: createNewTeask,
+        onPressed: createNewTask,
           child:Icon(Icons.add)
         
       ),
