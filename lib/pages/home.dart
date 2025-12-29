@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:hive_flutter/adapters.dart';
 import 'package:todolist/Components/dialog_box.dart';
 import 'package:todolist/Components/todo_tile.dart';
+import 'package:todolist/Data/database.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
@@ -10,48 +12,56 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
-  final _controller = TextEditingController();
+  final _mybox = Hive.box("mybox");
+  ToDoDatabase db = ToDoDatabase();
 
-  List todolist = [
-    ["Web dev Project", false],
-    ["Mobile app project", false],
-    ["Machine learning", false],
-    ["System Analysing", false],
-    ["DevOps", false],
-  ];
+  void iniState() {
+    if (_mybox.get("TODOLIST") == null) {
+      db.createInitialData();
+    } else {
+      db.loadData();
+    }
+  }
+
+
+  final _controller = TextEditingController();
 
   void checkBoxChanged(bool? value, int index) {
     setState(() {
-      todolist[index][1] = !todolist[index][1];
+      db.toDoList[index][1] = !db.toDoList[index][1];
     });
+    db.updateDatabase();
   }
-  void saveNewTask(){
+
+  void saveNewTask() {
     setState(() {
       if (_controller.text.trim().isEmpty) return;
-      todolist.add([_controller.text,false]);
+      db.toDoList.add([_controller.text, false]);
       _controller.clear();
     });
     Navigator.of(context).pop();
-  }
-  
-  void deleteTask(int index){
-    setState(() {
-      todolist.removeAt(index);
-    });
+    db.updateDatabase();
   }
 
- void createNewTask() {
-  showDialog(
-    context: context,
-    builder: (context) {
-      return DialogBox(
-        controller: _controller,
-        save: saveNewTask,
-        cancel: ()=>Navigator.of(context).pop(),
-      ); // calls Dialogbox class
-    },
-  );
-}
+  void deleteTask(int index) {
+    setState(() {
+      db.toDoList.removeAt(index);
+    });
+    db.updateDatabase();
+  }
+
+  void createNewTask() {
+    showDialog(
+      context: context,
+      builder: (context) {
+        return DialogBox(
+          controller: _controller,
+          save: saveNewTask,
+          cancel: () => Navigator.of(context).pop(),
+        ); // calls Dialogbox class
+      },
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -59,24 +69,24 @@ class _HomePageState extends State<HomePage> {
       backgroundColor: Colors.yellow[100],
       appBar: AppBar(
         backgroundColor: Colors.yellow[300],
-        elevation:1,
+        elevation: 1,
         title: const Text("To-Do List"),
         centerTitle: true,
       ),
 
       floatingActionButton: FloatingActionButton(
         onPressed: createNewTask,
-          child:Icon(Icons.add)
+        child: Icon(Icons.add),
       ),
 
       body: ListView.builder(
-        itemCount: todolist.length,
+        itemCount: db.toDoList.length,
         itemBuilder: (context, index) {
           return ToDoTile(
-            taskName: todolist[index][0],
-            taskCompleted: todolist[index][1],
+            taskName: db.toDoList[index][0],
+            taskCompleted: db.toDoList[index][1],
             // onDelete: ()=>onDelete(index),
-            deleteFunction: (context)=>deleteTask(index),
+            deleteFunction: (context) => deleteTask(index),
             onChanged: (value) => checkBoxChanged(value, index),
           );
         },
